@@ -5,12 +5,13 @@
 // noprotect
 var canvas = document.getElementById('myCanvas')
 var ctx = canvas.getContext('2d')
-ctx.canvas.width = window.innerWidth;
-ctx.canvas.height = window.innerHeight;
 
-const MAX_ITERATION = 80
 const WIDTH = window.innerWidth
 const HEIGHT = window.innerHeight
+ctx.canvas.width = WIDTH;
+ctx.canvas.height = HEIGHT;
+
+const MAX_ITERATION = 80
 
 const REAL_SET = { start: -2, end: 1 }
 const IMAGINARY_SET = { start: -1, end: 1 }
