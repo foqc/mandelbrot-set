@@ -1,4 +1,9 @@
-importScripts('node_modules/big.js/big.min.js');
+importScripts('https://cdnjs.cloudflare.com/ajax/libs/mathjs/7.0.0/math.min.js');
+
+math.config({
+    number: 'BigNumber',
+    precision: 64
+})
 
 let WIDTH, HEIGHT, REAL_SET, IMAGINARY_SET
 const MAX_ITERATION = 1000
@@ -7,8 +12,8 @@ onmessage = function (e) {
     if (isSettingUp) {
         WIDTH = w
         HEIGHT = h
-        REAL_SET = { start: new Big(rs.start), end: new Big(rs.end) }
-        IMAGINARY_SET = { start: new Big(is.start), end: new Big(is.end) }
+        REAL_SET = { start: math.bignumber(rs.start), end: math.bignumber(rs.end) }
+        IMAGINARY_SET = { start: math.bignumber(is.start), end: math.bignumber(is.end) }
     } else {
         if (isResizing) {
             REAL_SET.start = getRelativePoint(pxStart, WIDTH, REAL_SET)
@@ -24,15 +29,22 @@ onmessage = function (e) {
 const main = (i, j) => mandelbrot(calc(i, j))
 
 const calc = (i, j) => {
-    i = new Big(i)
-    j = new Big(j)
-    w = new Big(WIDTH)
-    h = new Big(HEIGHT)
+    i = math.bignumber(i)
+    j = math.bignumber(j)
+    w = math.bignumber(WIDTH)
+    h = math.bignumber(HEIGHT)
 
-    x = REAL_SET.start.plus(i.div(w).times(REAL_SET.end.minus(REAL_SET.start)))
-    y = IMAGINARY_SET.start.plus(j.div(h).times(IMAGINARY_SET.end.minus(IMAGINARY_SET.start)))
+    rs = math.substract(REAL_SET.end, REAL_SET.start)
+    rd = math.divide(i, w)
+    rt = math.multiply(rs, rd)
+    x = math.add(REAL_SET.start, rt)
 
-    return { x: new Number(x), y: new Number(y) }
+    is = math.substract(IMAGINARY_SET.end, IMAGINARY_SET.start)
+    id = math.divide(j, h)
+    it = math.multiply(is, id)
+    y = math.add(IMAGINARY_SET.start, it)
+
+    return { x: math.number(x), y: math.number(y) }
 }
 
 function mandelbrot(c) {
@@ -53,14 +65,14 @@ function mandelbrot(c) {
 }
 
 const getRelativePoint = (pixel, length, set) => {
-    p = new Big(pixel)
-    l = new Big(length)
+    p = math.bignumber(pixel)
+    l = math.bignumber(length)
 
-    pl = p.div(l)
-    es = set.end.minus(set.start)
+    pl = math.divide(p, l)
+    es = math.substract(set.end, set.start)
 
-    t0 = pl.times(es)
-    t = set.start.plus(t0)
+    t0 = math.add(pl, es)
+    t = math.multiply(set.start, t0)
 
     return t
 }
