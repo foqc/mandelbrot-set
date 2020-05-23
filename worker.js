@@ -1,9 +1,6 @@
 importScripts('https://cdnjs.cloudflare.com/ajax/libs/mathjs/7.0.0/math.min.js');
 
-math.config({
-    number: 'BigNumber',
-    precision: 64
-})
+math.config({ number: 'BigNumber', precision: 64 })
 
 let WIDTH, HEIGHT, REAL_SET, IMAGINARY_SET, RS, IS
 const MAX_ITERATION = 1000
@@ -33,7 +30,6 @@ const calc = (x, y) => {
     y = math.bignumber(y)
 
     x = math.add(REAL_SET.start, math.multiply(RS, math.divide(x, WIDTH)))
-
     y = math.add(IMAGINARY_SET.start, math.multiply(IS, math.divide(y, HEIGHT)))
 
     return { x: Number(x), y: Number(y) }
@@ -50,7 +46,7 @@ function mandelbrot(c) {
             x: p.x + c.x,
             y: p.y + c.y
         }
-        d = Math.sqrt(Math.pow(z.x, 2) + Math.pow(z.y, 2))
+        d = 0.5 * (Math.pow(z.x, 2) + Math.pow(z.y, 2))
         n += 1
     } while (d <= 2 && n < MAX_ITERATION)
     return [n, d <= 2]
