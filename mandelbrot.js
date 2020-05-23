@@ -50,17 +50,16 @@ const myColors = () => {
 
 function start() {
     for (let row = 0; row < WIDTH; row++) {
-        x = Number(math.add(math.bignumber(REAL_SET.start), math.multiply(RS, math.divide(math.bignumber(row), WIDTH))))
-        TASKS[row] = { x, row }
+        TASKS[row] = { row }
     }
     const task = TASKS.shift()
-    worker.postMessage({ x: task.x, row: task.row })
+    worker.postMessage({ row: task.row })
 }
 
 function draw(res) {
     if (TASKS.length > 0) {
         const task = TASKS.shift()
-        worker.postMessage({ x: task.x, row: task.row })
+        worker.postMessage({ row: task.row })
     }
 
     const { row, mandelbrotSets } = res.data;
@@ -82,18 +81,41 @@ function init() {
 
 init()
 
-const ALFA = 100
+const ALFA = 80
+const BETA = 60
 
 canvas.addEventListener('dblclick', e => {
     worker.terminate()
     const pxStart = e.x - ALFA
     const pxEnd = e.x + ALFA
 
-    const pyStart = e.y - ALFA
-    const pyEnd = e.y + ALFA
+    const pyStart = e.y - BETA
+    const pyEnd = e.y + BETA
 
-    myWorkers.map(x => x.postMessage({ pxStart, pxEnd, pyStart, pyEnd, isResizing: true }))
+    res = getRelativePoint(pxStart, WIDTH, REAL_SET)
+    ree = getRelativePoint(pxEnd, WIDTH, REAL_SET)
+
+    ims = getRelativePoint(pyStart, HEIGHT, IMAGINARY_SET)
+    ime = getRelativePoint(pyEnd, HEIGHT, IMAGINARY_SET)
+    
+    REAL_SET.start = res
+    REAL_SET.end = ree
+    IMAGINARY_SET.start = ims
+    IMAGINARY_SET.end = ime
     console.log('R -> ', REAL_SET.start, '  ', REAL_SET.end, ' I -> ', IMAGINARY_SET.start, '  ', IMAGINARY_SET.end)
 
     init()
 })
+
+const getRelativePoint = (p, l, set) => {
+    // p = math.bignumber(pixel)
+    // l = math.bignumber(l)
+
+    // pl = math.divide(p, l)
+    // es = math.subtract(math.bignumber(set.end), math.bignumber(set.start))
+
+    // t0 = math.multiply(pl, es)
+    // t = math.add(math.bignumber(set.start), t0)
+
+    return ((p/l) * (set.end - set.start)) + set.start
+}
