@@ -107,15 +107,15 @@ canvas.addEventListener('dblclick', e => {
     init()
 })
 
-const getRelativePoint = (p, l, set) => {
-    // p = math.bignumber(pixel)
-    // l = math.bignumber(l)
+const getRelativePoint = (pixel, l, set) => {
+    p = math.bignumber(pixel)
+    l = math.bignumber(l)
 
-    // pl = math.divide(p, l)
-    // es = math.subtract(math.bignumber(set.end), math.bignumber(set.start))
+    pl = math.divide(p, l)
+    es = math.subtract(math.bignumber(set.end), math.bignumber(set.start))
 
-    // t0 = math.multiply(pl, es)
-    // t = math.add(math.bignumber(set.start), t0)
+    t0 = math.multiply(pl, es)
+    t = math.add(math.bignumber(set.start), t0)
 
-    return ((p/l) * (set.end - set.start)) + set.start
+    return Number(t) //((p/l) * (set.end - set.start)) + set.start
 }
