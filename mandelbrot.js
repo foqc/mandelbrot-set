@@ -12,6 +12,7 @@ ctx.canvas.width = WIDTH
 ctx.canvas.height = HEIGHT
 
 let worker
+let colorPalette = []
 let REAL_SET = { start: -2, end: 1 }
 let IMAGINARY_SET = { start: -1, end: 1 }
 const ZOOM_FACTOR = 0.1
@@ -56,6 +57,11 @@ const pelette = (size = 250) => {
     return colors
 }
 
+const paletteBW = () => new Array(250).fill(0).map((_, i) => {
+    const c = lagrange([0, 0], [250, 255], i)
+    return [c, c, c]
+})
+
 const start = () => {
     for (let row = 0; row < WIDTH; row++) TASKS[row] = row
     worker.postMessage({ row: TASKS.shift() })
@@ -68,7 +74,7 @@ const draw = (res) => {
     const { row, mandelbrotSets } = res.data
     for (let i = 0; i < HEIGHT; i++) {
         const [m, isMandelbrotSet] = mandelbrotSets[i]
-        c = isMandelbrotSet ? [0, 0, 0] : colors[m % (colors.length - 1)]
+        c = isMandelbrotSet ? [0, 0, 0] : colorPalette[m % (colorPalette.length - 1)]
         ctx.fillStyle = `rgb(${c[0]}, ${c[1]}, ${c[2]})`
         ctx.fillRect(row, i, 1, 1)
     }
@@ -79,7 +85,7 @@ const init = () => {
     worker = new Worker('worker.js')
     worker.postMessage({ w: WIDTH, h: HEIGHT, realSet: REAL_SET, imaginarySet: IMAGINARY_SET, isSettingUp: true })
     start()
-    colors = pelette()
+    colorPalette = pelette()
     worker.onmessage = draw
 }
 
