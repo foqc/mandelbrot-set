@@ -1,7 +1,3 @@
-importScripts('https://cdnjs.cloudflare.com/ajax/libs/mathjs/7.0.0/math.min.js');
-
-math.config({ number: 'BigNumber', precision: 64 })
-
 let WIDTH, HEIGHT, REAL_SET, IMAGINARY_SET, END_START_RL, END_START_IM
 const MAX_ITERATION = 1000
 
@@ -10,14 +6,14 @@ onmessage = (e) => {
     if (isSettingUp) {
         const { w, h, realSet, imaginarySet } = e.data
 
-        REAL_SET = { start: math.bignumber(realSet.start), end: math.bignumber(realSet.end) }
-        IMAGINARY_SET = { start: math.bignumber(imaginarySet.start), end: math.bignumber(imaginarySet.end) }
+        REAL_SET = { start: realSet.start, end: realSet.end }
+        IMAGINARY_SET = { start: imaginarySet.start, end: imaginarySet.end }
 
-        END_START_RL = math.subtract(REAL_SET.end, REAL_SET.start)
-        END_START_IM = math.subtract(IMAGINARY_SET.end, IMAGINARY_SET.start)
+        END_START_RL = (REAL_SET.end - REAL_SET.start)
+        END_START_IM = (IMAGINARY_SET.end - IMAGINARY_SET.start)
 
-        WIDTH = math.bignumber(w)
-        HEIGHT = math.bignumber(h)
+        WIDTH = w
+        HEIGHT = h
     } else {
         const { row } = e.data
         const mandelbrotSets = []
@@ -27,16 +23,13 @@ onmessage = (e) => {
         postMessage({ row, mandelbrotSets })
     }
 }
-const calculate = (i, j) => mandelbrot(calc(i, j))
+const calculate = (i, j) => mandelbrot(relativePoint(i, j))
 
-const calc = (x, y) => {
-    x = math.bignumber(x)
-    y = math.bignumber(y)
+const relativePoint = (x, y) => {
+    x = REAL_SET.start + (x / WIDTH) * (END_START_RL)
+    y = IMAGINARY_SET.start + (y / HEIGHT) * (END_START_IM)
 
-    x = math.add(REAL_SET.start, math.multiply(END_START_RL, math.divide(x, WIDTH)))
-    y = math.add(IMAGINARY_SET.start, math.multiply(END_START_IM, math.divide(y, HEIGHT)))
-
-    return { x: Number(x), y: Number(y) }
+    return { x, y }
 }
 
 const mandelbrot = (c) => {

@@ -17,8 +17,6 @@ let IMAGINARY_SET = { start: -1, end: 1 }
 const ZOOM_FACTOR = 0.1
 const TASKS = []
 
-math.config({ number: 'BigNumber', precision: 64 })
-
 const lagrange = ([X1, Y1], [X2, Y2], x) => (((Y1 * (x - X2)) / (X1 - X2)) + ((Y2 * (x - X1)) / (X2 - X1)))
 
 const makeRGB = (r, g, b, k) => {
@@ -101,17 +99,6 @@ canvas.addEventListener('dblclick', e => {
     init()
 })
 
-const getRelativePoint = (pixel, length, set) => {
-    pixel = math.bignumber(pixel)
-    length = math.bignumber(length)
-
-    pl = math.divide(pixel, length)
-    es = math.subtract(math.bignumber(set.end), math.bignumber(set.start))
-
-    t0 = math.multiply(pl, es)
-    t = math.add(math.bignumber(set.start), t0)
-
-    return Number(t)
-}
+const getRelativePoint = (pixel, length, set) => set.start + (pixel / length) * (set.end - set.start)
 
 init()
