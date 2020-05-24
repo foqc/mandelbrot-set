@@ -94,12 +94,12 @@ canvas.addEventListener('dblclick', e => {
     const zfh = (HEIGHT * ZOOM_FACTOR)
 
     REAL_SET = {
-        start: getRelativePoint(e.x - zfw, WIDTH, REAL_SET),
-        end: getRelativePoint(e.x + zfw, WIDTH, REAL_SET)
+        start: getRelativePoint(e.pageX - canvas.offsetLeft - zfw, WIDTH, REAL_SET),
+        end: getRelativePoint(e.pageX - canvas.offsetLeft + zfw, WIDTH, REAL_SET)
     }
     IMAGINARY_SET = {
-        start: getRelativePoint(e.y - zfh, HEIGHT, IMAGINARY_SET),
-        end: getRelativePoint(e.y + zfh, HEIGHT, IMAGINARY_SET)
+        start: getRelativePoint(e.pageY - canvas.offsetTop - zfh, HEIGHT, IMAGINARY_SET),
+        end: getRelativePoint(e.pageY - canvas.offsetTop + zfh, HEIGHT, IMAGINARY_SET)
     }
 
     init()
