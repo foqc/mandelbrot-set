@@ -58,12 +58,12 @@ const pelette = (size = 250) => {
     return colors
 }
 
-function start() {
+const start = () => {
     for (let row = 0; row < WIDTH; row++) TASKS[row] = row
     worker.postMessage({ row: TASKS.shift() })
 }
 
-function draw(res) {
+const draw = (res) => {
     if (TASKS.length > 0)
         worker.postMessage({ row: TASKS.shift() })
 
@@ -76,16 +76,14 @@ function draw(res) {
     }
 }
 
-function init() {
+const init = () => {
     if (worker) worker.terminate()
     worker = new Worker('worker.js')
-    worker.postMessage({ w: WIDTH, h: HEIGHT, rs: REAL_SET, is: IMAGINARY_SET, isSettingUp: true })
+    worker.postMessage({ w: WIDTH, h: HEIGHT, realSet: REAL_SET, imaginarySet: IMAGINARY_SET, isSettingUp: true })
     start()
     colors = pelette()
     worker.onmessage = draw
 }
-
-init()
 
 canvas.addEventListener('dblclick', e => {
     const zfw = (WIDTH * ZOOM_FACTOR)
@@ -103,11 +101,11 @@ canvas.addEventListener('dblclick', e => {
     init()
 })
 
-const getRelativePoint = (pixel, l, set) => {
-    p = math.bignumber(pixel)
-    l = math.bignumber(l)
+const getRelativePoint = (pixel, length, set) => {
+    pixel = math.bignumber(pixel)
+    length = math.bignumber(length)
 
-    pl = math.divide(p, l)
+    pl = math.divide(pixel, length)
     es = math.subtract(math.bignumber(set.end), math.bignumber(set.start))
 
     t0 = math.multiply(pl, es)
@@ -115,3 +113,5 @@ const getRelativePoint = (pixel, l, set) => {
 
     return Number(t)
 }
+
+init()
