@@ -34,7 +34,7 @@ const makeRGB = (r, g, b, k) => {
  * rgb(255, 0, 0) -> rgb(255, 255, 0) -> rgb(0, 255, 0)
  * rgb(0,255,255) -> rgb(0, 0, 255) -> rgb(255, 0, 255)
  */
-const pelette = (size = 250) => {
+const palette = (size = 250) => {
     const range = parseInt(size / 6)
     const colors = []
     let c
@@ -63,20 +63,20 @@ const paletteBW = () => new Array(250).fill(0).map((_, i) => {
 })
 
 const start = () => {
-    for (let row = 0; row < WIDTH; row++) TASKS[row] = row
-    worker.postMessage({ row: TASKS.shift() })
+    for (let col = 0; col < WIDTH; col++) TASKS[col] = col
+    worker.postMessage({ col: TASKS.shift() })
 }
 
 const draw = (res) => {
     if (TASKS.length > 0)
-        worker.postMessage({ row: TASKS.shift() })
+        worker.postMessage({ col: TASKS.shift() })
 
-    const { row, mandelbrotSets } = res.data
+    const { col, mandelbrotSets } = res.data
     for (let i = 0; i < HEIGHT; i++) {
         const [m, isMandelbrotSet] = mandelbrotSets[i]
         c = isMandelbrotSet ? [0, 0, 0] : colorPalette[m % (colorPalette.length - 1)]
         ctx.fillStyle = `rgb(${c[0]}, ${c[1]}, ${c[2]})`
-        ctx.fillRect(row, i, 1, 1)
+        ctx.fillRect(col, i, 1, 1)
     }
 }
 
@@ -85,7 +85,7 @@ const init = () => {
     worker = new Worker('worker.js')
     worker.postMessage({ w: WIDTH, h: HEIGHT, realSet: REAL_SET, imaginarySet: IMAGINARY_SET, isSettingUp: true })
     start()
-    colorPalette = pelette()
+    colorPalette = palette()
     worker.onmessage = draw
 }
 

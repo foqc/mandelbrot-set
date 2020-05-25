@@ -15,12 +15,12 @@ onmessage = (e) => {
         WIDTH = w
         HEIGHT = h
     } else {
-        const { row } = e.data
+        const { col } = e.data
         const mandelbrotSets = []
-        for (let col = 0; col < HEIGHT; col++)
-            mandelbrotSets[col] = calculate(row, col)
+        for (let row = 0; row < HEIGHT; row++)
+            mandelbrotSets[row] = calculate(col, row)
 
-        postMessage({ row, mandelbrotSets })
+        postMessage({ col, mandelbrotSets })
     }
 }
 const calculate = (i, j) => mandelbrot(relativePoint(i, j))
